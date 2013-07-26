@@ -36,22 +36,22 @@ function loadFileIntoArray(filepath) {
 	xhttp.open("GET",filepath,false);
 	xhttp.send("null");
 	var data = xhttp.responseText;
-	
+
 	var re = new RegExp("^.*$", "mg");
-		
+
 	var dataArray = data.match(re);
 
 	return dataArray;
 }
 
-// prints an array to the webpage - omits any undefined or null elements 
+// prints an array to the webpage - omits any undefined or null elements
 function writeArray(source) {
 	for (var i=0; i < source.length; i++) {
 		if (source[i] != undefined && source[i] != null) {
 			document.write(i + ": " + source[i] + "<br />");
 		}
 	}
-	
+
 }
 
 // returns an array containing the indices of elements in source and target that differ
@@ -59,13 +59,13 @@ function writeArray(source) {
 // assumes source.length == target.length
 function compareArrays(source, target, print) {
 	var diff = new Array();
-	
+
 	for (var i=0; i < source.length; i++) {
 		if (source[i] != target[i]) {
 			diff[diff.length] = i;
 		}
 	}
-	
+
 	if (print) {
 		var diffPrint = new Array();
 		for (var i=0; i < diff.length; i++) {
@@ -73,29 +73,103 @@ function compareArrays(source, target, print) {
 		}
 		writeArray(diffPrint);
 	}
-	
-	return diff; 
-	
+
+	return diff;
+
 }
-
-
-function main(){
-	var a = new Array();
-	a= loadFileIntoArray('tweens600.txt');
+function findRelative(source){
 	var relation= new Array();
-	for (var i=0; i<a.length; i++){
+	var count;
+	for (var i=0 ; i<source.length; i++){
+		 count=0;
 		var relative= new Array();
-		var count=0;
-		for (var j=i+1; j<a.length; j++){
-			var differ= compareArrays(a[i], a[j]);
-			var fraction = differ.length/a.length;
-			if(fraction<=0.2){
-				relative[count]=j;
-				count++;			}
+		for(var j=0; j<source.length; j++){
+			if(i!=j){
+				var diff= compareArrays(source[i], source[j]);
+				var fraction= diff.length/source.length;
+				if(fraction<=0.245){
+					relative[count]= j;
+					count++;
+				}
+			}
 		}
 		relation[i]=relative;
-	}	
-	for( i=0; i<relation.length; i++){
-		document.write(relation[i]+" are the relatives of " + i +" <br>");
 	}
+	//writeArray(relation);
+	return relation;
+}
+function calculateTerminalChildren(source){
+	var relation= new Array();
+	var count=0;
+	/*var pos=0;
+	for (var i=0 ; i<source.length; i++){
+		 count=0;
+		var relative= new Array();
+		for(var j=0; j<source.length; j++){
+			if(i!=j){
+				var diff= compareArrays(source[i], source[j]);
+				var fraction= diff.length/source.length;
+				if(fraction<=0.245){
+					relative[count]= j;
+					count++;
+				}
+			}
+		}
+		if(count==1){
+			relation[pos]=relative[0];
+			pos++;
+		}
+	}
+	//writeArray(relation);
+	return relation;*/
+	var tc= new Array();
+	for(var i=0; i<source.length; i++){
+
+		if(source[i]!=null && source[i].length==1 ){
+			tc[count]=i;
+			count++;
+		}
+	}
+	return tc;
+}
+function main(){
+	var a = new Array();
+	var rel=0;
+	a= loadFileIntoArray('tweens600.txt');
+	var relation= new Array();
+	relation= findRelative(a);
+	var fatherChild= new Array();
+	var tc=new Array();
+	/*while(1){
+		tc= calculateTerminalChildren(a);
+	}*/
+	tc = calculateTerminalChildren(relation);
+	var i=0;
+	var count=0;
+	while(relation.length>count){
+		/*
+		 	show the father son relation
+			from relations, remove them
+		*/
+		console.log(i, tc[i], relation[tc[i]]);
+		var dad= parseInt(relation[tc[i]]);
+		fatherChild[dad]=tc[i];
+		relation[tc[i]]=null;
+
+		var childIndex=relation[dad].indexOf(tc[i]);
+
+		relation[dad].splice(childIndex,1);
+		i++;
+		count++;
+		if(i==tc.length){
+			console.log("Generated new list of terminal children");
+			tc=[];
+			tc=calculateTerminalChildren(relation);
+			i=0;
+		}
+		console.log("----Father child----", fatherChild);
+
+	}
+	writeArray(relation);
+	//writeArray(tc);
 }
