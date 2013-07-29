@@ -146,7 +146,10 @@ function main(){
 	tc = calculateTerminalChildren(relation);
 	var i=0;
 	var count=0;
+	var nulla=0;
+	//writeArray(relation);
 	while(relation.length>count){
+	//while(count<400){
 		/*
 		 	show the father son relation
 			from relations, remove them
@@ -154,22 +157,42 @@ function main(){
 		console.log(i, tc[i], relation[tc[i]]);
 		var dad= parseInt(relation[tc[i]]);
 		fatherChild[dad]=tc[i];
-		relation[tc[i]]=null;
+		console.log("----Father child----", fatherChild);
 
-		var childIndex=relation[dad].indexOf(tc[i]);
 
-		relation[dad].splice(childIndex,1);
-		i++;
-		count++;
+		if(relation[dad]!=null){
+			var childIndex=relation[dad].indexOf(tc[i]);
+			relation[dad].splice(childIndex,1);
+
+			count++;
+			console.log(nulla);
+			nulla=0;// remove after errors fixed
+		}
+		else{   //remove after errors fixed
+			nulla++;
+			console.log(tc[i], tc+ "is son");
+			console.log(dad, relation + "is dad");
+		}
+		if(nulla>300){
+			console.log(relation);
+			console.log(relation.length, count);
+			console.log(tc);
+			//return;
+		}
 		if(i==tc.length){
 			console.log("Generated new list of terminal children");
 			tc=[];
 			tc=calculateTerminalChildren(relation);
+			console.log(tc);
 			i=0;
 		}
-		console.log("----Father child----", fatherChild);
-
+	console.log(relation[tc[i]] + " is the relation of the child that will be removed -----------");
+	relation[tc[i]]=null;
+	i++;
 	}
+
+	document.write("---------------------");
 	writeArray(relation);
-	//writeArray(tc);
+	writeArray(fatherChild);
+	return;
 }
