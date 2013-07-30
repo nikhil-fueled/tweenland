@@ -79,24 +79,21 @@ function compareArrays(source, target, print) {
 }
 function findRelative(source){
 	var relation= new Array();
-	var count;
 	for (var i=0 ; i<source.length; i++){
+		relation[i]=new Array();
 		 count=0;
-		var relative= new Array();
 		for(var j=0; j<source.length; j++){
-			if(i!=j){
 				var diff= compareArrays(source[i], source[j]);
 				var fraction= diff.length/source.length;
 				if(fraction<=0.245 && fraction >=0.15162){
-					relative[count]= j;
-					count++;
+					relation[i][j]=fraction;
 				}
-			}
+				else{
+					relation[i][j]=0;
+				}
 		}
-		relation[i]=relative;
 	}
-	//writeArray(relation);
-	return relation;
+		return relation;
 }
 function calculateTerminalChildren(source){
 	var relation= new Array();
@@ -122,12 +119,16 @@ function calculateTerminalChildren(source){
 	}
 	//writeArray(relation);
 	return relation;*/
+	var counter=0;
 	var tc= new Array();
 	for(var i=0; i<source.length; i++){
-
-		if(source[i]!=null && source[i].length==1 ){
-			tc[count]=i;
-			count++;
+		count=0;
+		for(var j=0; j<source.length; j++){
+			if(source[i][j]!=0)
+				count++;
+		}
+		if(count==1){
+			tc[counter++]=i;
 		}
 	}
 	return tc;
