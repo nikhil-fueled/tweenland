@@ -87,7 +87,7 @@ function findRelative(source){
 			if(i!=j){
 				var diff= compareArrays(source[i], source[j]);
 				var fraction= diff.length/source.length;
-				if(fraction<=0.245){
+				if(fraction<=0.245 && fraction >=0.15162){
 					relative[count]= j;
 					count++;
 				}
@@ -144,11 +144,16 @@ function main(){
 		tc= calculateTerminalChildren(a);
 	}*/
 	tc = calculateTerminalChildren(relation);
+
 	var i=0;
+	for(i=0; i<tc.length; i++){
+		fatherChild[tc[i]]=-1;
+	}
+	i=0;
 	var count=0;
 	var nulla=0;
 	//writeArray(relation);
-	while(relation.length>count){
+	while(tc.length>=1){
 	//while(count<400){
 		/*
 		 	show the father son relation
@@ -156,10 +161,14 @@ function main(){
 		*/
 		console.log(i, tc[i], relation[tc[i]]);
 		var dad= parseInt(relation[tc[i]]);
-		fatherChild[dad]=tc[i];
+		if(fatherChild[dad]!=-1)
+			fatherChild[dad]=tc[i];
+		/*if(tc[i]==58){
+			document.write(relation[tc[i]]+"----" + fatherChild[relation[tc[i]]]);
+			writeArray(fatherChild);
+			return;
+		}*/
 		console.log("----Father child----", fatherChild);
-
-
 		if(relation[dad]!=null){
 			var childIndex=relation[dad].indexOf(tc[i]);
 			relation[dad].splice(childIndex,1);
@@ -186,13 +195,16 @@ function main(){
 			console.log(tc);
 			i=0;
 		}
+
 	console.log(relation[tc[i]] + " is the relation of the child that will be removed -----------");
 	relation[tc[i]]=null;
 	i++;
 	}
 
 	document.write("---------------------");
-	writeArray(relation);
+
 	writeArray(fatherChild);
+	document.write("relations remaining-- choose ur daddy");
+	writeArray(relation);
 	return;
 }
